@@ -1,7 +1,8 @@
-// import { hashHistory, withRouter } from 'react-router';
-// import React, { Component } from 'react';
-// import request from 'superagent';
-// import MovieCarousel from './MovieCarousel.jsx';
+
+import { hashHistory, withRouter } from 'react-router';
+import React, { Component } from 'react';
+import request from 'superagent';
+import TrailerCarousel from './TrailerCarousel.jsx';
 
 // class Community extends Component {
 //   constructor() {
@@ -32,21 +33,22 @@
 //     .catch(err => err);
 //   }
 
-// render() {
-// const usernames = this.state.users.map((user, idx) => {
-//   return(
-//     <div key={user.id} >
-//       <li >{user.username}</li>
-//       <MovieCarousel trailers={this.state.trailers[idx]} />
-//     </div>
-//     );
-// });
-//   return (
-//     <div>
-//       <ul>{usernames}</ul>
-//     </div>
-//   );
-//  }
-// };
+render() {
+const usernames = this.state.users.map((user, idx) => {
+  return(
+    <div key={user.id} >
+      <li >{user.username}</li>
+      <TrailerCarousel trailers={this.state.trailers[idx]} />
+    </div>
+    );
+});
+  return (
+    <div>
+      <ul>{usernames}</ul>
+    </div>
+  );
+ }
+};
+
 
 // export default withRouter(Community);
