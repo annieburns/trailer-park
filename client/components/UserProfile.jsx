@@ -1,70 +1,44 @@
 import React, { Component } from 'react';
 import { hashHistory, withRouter } from 'react-router';
 import request from 'superagent';
-import jwtDecode from 'jwt-decode';
-import TrailerCarousel from './TrailerCarousel.jsx';
+import MovieCarousel from './TrailerCarousel.jsx';
 
 const propTypes = {
-  token: React.PropTypes.string,
+  currentUser: React.PropTypes.object,
   handleSignout: React.PropTypes.func,
 };
 
 class UserProfile extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      id: '',
-      email: '',
-      username: '',
-      firstName: '',
-      lastName: '',
-      bio: '',
+      email: this.props.currentUser.email || '',
+      username: this.props.currentUser.username || '',
+      firstName: this.props.currentUser.firstName || '',
+      lastName: this.props.currentUser.lastName || '',
+      bio: this.props.currentUser.bio || '',
+      password: this.props.currentUser.password || '',
       trailers: [],
     };
-    this.getCurrentUser = this.getCurrentUser.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleUpdate = this.handleUpdate.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-  }
-  componentWillReceiveProps(nextProps) {
-    const { token } = nextProps;
-    if (token) {
-      this.getCurrentUser(token);
-      this.getTrailers(token.id);
-    }
+    this.handleDeleteUser = this.handleDeleteUser.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+    this.handleUpdateProfile = this.handleUpdateProfile.bind(this);
+    this.handleUpdateClick = this.handleUpdateClick.bind(this);
   }
   componentDidMount() {
-    const { token } = this.props;
-    if (token) {
-      this.getCurrentUser(token);
-      this.getTrailers(token.id);
-    }
+    this.getTrailers();
   }
-  getCurrentUser(token) {
-    if (token) {
-      const decoded = jwtDecode(token);
-      const id = decoded.id;
-      this.getTrailers(id);
-      this.setState({
-        id: decoded.id,
-        email: decoded.email,
-        username: decoded.username,
-        firstName: decoded.firstName,
-        lastName: decoded.lastName,
-        bio: decoded.bio,
-      });
-    }
-  }
-  getTrailers(id) {
-    if (id) {
-      const url = `/api/users/${id}/trailers`;
-      request.get(url)
-      .then((response) => {
-        const trailers = response.body;
-        this.setState({ trailers });
-      })
-      .catch(err => err);
-    }
+  getTrailers() {
+    const url = `/api/users/${this.props.currentUser.id}/trailers`;
+    console.log(url);
+    request.get(url)
+    .then((response) => {
+      const trailers = response.body;
+      this.setState({ trailers });
+    })
+    .catch(err => err);
   }
   handleChange(e) {
     const target = e.target;
@@ -74,42 +48,50 @@ class UserProfile extends Component {
     updated[name] = value;
     this.setState(updated);
   }
-  handleUpdate(e) {
+  handleSubmit(e) {
     e.preventDefault();
-    request.patch(`/api/users/${this.state.id}`)
+    // >>>> TODO need to submit to the users profile
+  }
+  handleUpdateProfile() {
+    request.patch(`/api/users/${this.props.currentUser.id}`)
            .send(this.state)
            .then((response) => {
              const updated = response.body;
              this.setState(updated);
            });
   }
-  handleDelete(e) {
+  handleUpdateClick(e) {
     e.preventDefault();
-    request.del(`/api/users/${this.state.id}`)
+    this.handleUpdateProfile();
+  }
+  handleDeleteUser() {
+    request.del(`/api/users/${this.props.currentUser.id}`)
            .then(() => {
              this.props.handleSignout();
              // TODO handle signout
              hashHistory.push('/');
            });
   }
+  handleDeleteClick(e) {
+    e.preventDefault();
+    this.handleDeleteUser();
+  }
   render() {
     return (
-      <div className="profile-container">
-        <TrailerCarousel header="Your Trailers" trailers={this.state.trailers} />
+      <div>
         <form onSubmit={this.handleSubmit}>
-          <h1>My Profile</h1>
+          <h1>My Profile {this.state.email}</h1>
           <input
             type="text"
             name="email"
             onChange={this.handleChange}
             placeholder="email"
-            value={this.state.email}
           />
           <input
             type="text"
             name="username"
             onChange={this.handleChange}
-            placeholder="Username"
+            placeholder="User Name"
             value={this.state.username}
           />
           <input
@@ -136,14 +118,15 @@ class UserProfile extends Component {
           <input
             type="submit"
             value="Update"
-            onClick={this.handleUpdate}
+            onClick={this.handleUpdateClick}
           />
           <input
             type="submit"
             value="Delete"
-            onClick={this.handleDelete}
+            onClick={this.handleDeleteClick}
           />
         </form>
+        <MovieCarousel trailers={this.state.trailers} />
       </div>
     );
   }

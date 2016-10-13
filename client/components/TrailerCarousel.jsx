@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import request from 'superagent';
 
 const propTypes = {
   currentUser: React.PropTypes.object,
@@ -20,8 +21,10 @@ class TrailerCarousel extends Component {
     };
     this.getVideoEmbedCode = this.getVideoEmbedCode.bind(this);
     this.handleCarouselButton = this.handleCarouselButton.bind(this);
-    this.handleAddLoveMovie = this.handleAddLoveMovie.bind(this);
-    this.handleAddHateMovie = this.handleAddHateMovie.bind(this);
+    this.handleLove = this.handleLove.bind(this);
+    this.handleLoveClick = this.handleLoveClick.bind(this);
+    this.handleBrokenHeart = this.handleBrokenHeart.bind(this);
+    this.handleBrokenHeartClick = this.handleBrokenHeartClick.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     const currentTrailerIndex = this.state.currentTrailerIndex || 0;
@@ -89,33 +92,33 @@ class TrailerCarousel extends Component {
       return index - 1;
     });
   }
-  handleAddLoveMovie() {
-    console.log(this.props.currentUser.id)
-    // request.patch(`/api/trailers/${this.props.currentUser.id}`)
-    //        .send(this.state)
-    //        .then((response) => {
-    //         const updated = response.body;
-    //           console.log(updated);
-    //          this.setState(updated);
-    //   });
+
+ handleLove() {
+    request.post(`/api/users/${this.props.currentUser}`)
+           .send(this.state)
+           .then((response) => {
+             const updated = response.body;
+             this.setState(updated);
+    });
   }
-  handleAddLoveMovieClick(e) {
+  handleLoveClick(e) {
     e.preventDefault();
-    this.handleAddLoveMovie();
+    this.handleLove();
   }
-  handleAddHateMovie() {
-    // request.patch(`/api/users/${this.props.currentUser.id}`)
-    //        .send(this.state)
-    //        .then((response) => {
-    //         const updated = response.body;
-    //           console.log(updated);
-    //          this.setState(updated);
-    //   });
+
+ handleBrokenHeart() {
+    request.post(`/api/users/${this.props.currentUser}`)
+           .send(this.state)
+           .then((response) => {
+             const updated = response.body;
+             this.setState(updated);
+    });
   }
-  handleAddHateMovieClick(e) {
+  handleBrokenHeartClick(e) {
     e.preventDefault();
-    this.handleAddHateMovie();
+    this.handleLove();
   }
+
   componentDidMount() {
     const carouselHeight = document.querySelector('.current-trailer_li').offsetHeight;
     this.setState({
@@ -142,8 +145,13 @@ class TrailerCarousel extends Component {
             <li className="current-trailer_li">
               <div className="trailer_container current-trailer_container">
                 {videoEmbedCode}
-                <button className="heart" onClick={this.handleAddLoveMovieClick} />
-                <button className="broken-heart" onClick={this.handleAddLoveMovieClick} />
+                <button
+                  type="click"
+                  className="heart"
+                  onClick={this.handleLoveClick} />
+                <button
+                  className="broken-heart"
+                  onClick={this.handleAddLoveMovieClick} />
               </div>
               <h4 className="current-trailer_title">{this.state.currentTrailerTitle}</h4>
             </li>
@@ -157,8 +165,12 @@ class TrailerCarousel extends Component {
           </ul>
         </section>
         <div className="carousel-buttons">
-          <button className="prev" onClick={this.handleCarouselButton} >Prev</button>
-          <button className="next" onClick={this.handleCarouselButton} >Next </button>
+          <button
+            className="prev"
+            onClick={this.handleCarouselButton} >Prev</button>
+          <button
+            className="next"
+            onClick={this.handleCarouselButton} >Next </button>
         </div>
       </div>
       );

@@ -5,7 +5,7 @@ import Search from '../../client/components/Search.jsx';
 import UserForm from '../components/users/UserForm.jsx';
 import UserProfile from '../components/UserProfile.jsx';
 import TrailerCarousel from '../components/TrailerCarousel.jsx';
-import Community from '../components/Community.jsx';
+
 
 
 const Routes = () => (
@@ -16,7 +16,6 @@ const Routes = () => (
       <Route path="login" component={UserForm} />
       <Route path="profile" component={UserProfile} />
       <Route path="carousel" component={TrailerCarousel} />
-      <Route path="community" component={Community} />
       <Route path="search" component={Search} />
     </Route>
   </Router>
