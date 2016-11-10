@@ -3,20 +3,19 @@
   "version": "1.0.0",
   "description": "## Problem Statement:",
   "main": "server.js",
-  "scripts": {
-    "test": "jasmine",
-    "start": "nodemon ./server.js"
+  "engines": {
+    "node": "6.8.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/erikwithuhk/trailer-park.git"
+    "url": "git@github.com:annieburns/trailer-park.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/erikwithuhk/trailer-park/issues"
+    "url": "git@github.com:annieburns/trailer-park/issues"
   },
-  "homepage": "https://github.com/erikwithuhk/trailer-park#readme",
+  "homepage": "https://git@github.com:annieburns/trailer-park#readme",
   "dependencies": {
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
